@@ -1,0 +1,35 @@
+name: Flutter checks
+
+on:
+  push:
+    branches: [setup/core-files]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Flutter stable
+        run: |
+          git clone --depth 1 --branch stable https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Resolve packages
+        run: flutter pub get
+      - name: Format and report changes
+        run: |
+          dart format lib test
+          git diff -- lib test
+      - name: Analyze
+        run: flutter analyze
+      - name: Test
+        run: flutter test
+      - name: Build Android debug APK
+        run: flutter build apk --debug

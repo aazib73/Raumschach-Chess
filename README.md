@@ -2,6 +2,20 @@
 
 CS 4750 team project: a local, pass-and-play game on five 5x5 levels.
 
+## Dart application and Android build
+
+All application code is Dart. Android starts Flutter's built-in
+`io.flutter.embedding.android.FlutterActivity` directly, so this repository has
+no custom MainActivity.kt or MainActivity.java. Android build scripts use the
+Groovy Gradle DSL (.gradle), with no Kotlin .kt or .kts files.
+
+The Android manifest, resources, and Gradle configuration stay in the repository
+so teammates can build the Android app from a clone. Ember_Quest stores only
+Dart source files; this repository also carries its build configuration.
+
+Do not add game logic to the Android build scripts. Release signing is still a
+delivery task; the template's current release configuration uses the debug key.
+
 ## Current starting point
 
 The Flutter entry point still runs the original starter app. This setup adds
