@@ -117,7 +117,7 @@ Use the Flutter SDK already installed on the team's development machines:
 ```sh
 flutter pub get
 dart format lib test
-flutter analyze
+flutter analyze --no-fatal-infos
 flutter test
 flutter devices
 ```
@@ -128,3 +128,7 @@ Run on a detected Android emulator/phone from Android Studio, or use
 The foundation tests check coordinate lookup, board bounds, the starting armies,
 immutable snapshots, and controller reset notifications. Add legal-movement and
 check-detection tests as those features are implemented.
+
+Newer Flutter versions emit an informational deprecation for the original
+starter's Material import. The check above keeps analyzer errors and warnings
+fatal while retaining compatibility with the course starter.

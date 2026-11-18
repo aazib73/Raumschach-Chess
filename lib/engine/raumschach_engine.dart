@@ -17,22 +17,33 @@ class RaumschachEngine {
       required List<PieceType> pieces,
     }) {
       for (var file = 0; file < Position3D.boardSize; file++) {
-        board[Position3D(file: file, rank: rank, level: level)] =
-            ChessPiece(type: pieces[file], color: color);
+        board[Position3D(file: file, rank: rank, level: level)] = ChessPiece(
+          type: pieces[file],
+          color: color,
+        );
       }
     }
 
     const outerRow = [
-      PieceType.rook, PieceType.knight, PieceType.king,
-      PieceType.knight, PieceType.rook,
+      PieceType.rook,
+      PieceType.knight,
+      PieceType.king,
+      PieceType.knight,
+      PieceType.rook,
     ];
     const whiteInnerRow = [
-      PieceType.bishop, PieceType.unicorn, PieceType.queen,
-      PieceType.bishop, PieceType.unicorn,
+      PieceType.bishop,
+      PieceType.unicorn,
+      PieceType.queen,
+      PieceType.bishop,
+      PieceType.unicorn,
     ];
     const blackInnerRow = [
-      PieceType.unicorn, PieceType.bishop, PieceType.queen,
-      PieceType.unicorn, PieceType.bishop,
+      PieceType.unicorn,
+      PieceType.bishop,
+      PieceType.queen,
+      PieceType.unicorn,
+      PieceType.bishop,
     ];
     final pawns = List<PieceType>.filled(Position3D.boardSize, PieceType.pawn);
 

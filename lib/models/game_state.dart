@@ -18,7 +18,9 @@ class GameState {
   }) : board = Map<Position3D, ChessPiece>.unmodifiable(board),
        history = List<ChessMove>.unmodifiable(history) {
     if (this.board.keys.any((position) => !position.isInBounds)) {
-      throw ArgumentError('Every occupied cell must be inside the 5x5x5 board.');
+      throw ArgumentError(
+        'Every occupied cell must be inside the 5x5x5 board.',
+      );
     }
   }
 
@@ -30,7 +32,11 @@ class GameState {
 
   ChessPiece? pieceAt(Position3D position) {
     if (!position.isInBounds) {
-      throw ArgumentError.value(position, 'position', 'Cell is outside the board');
+      throw ArgumentError.value(
+        position,
+        'position',
+        'Cell is outside the board',
+      );
     }
     return board[position];
   }

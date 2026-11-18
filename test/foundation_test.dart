@@ -9,23 +9,29 @@ import 'package:raumschach/models/position_3d.dart';
 void main() {
   const engine = RaumschachEngine();
 
-  test('all 125 cells have unique display coordinates and value-based lookup', () {
-    final positions = <Position3D>{};
-    final labels = <String>{};
-    for (var level = 0; level < 5; level++) {
-      for (var rank = 0; rank < 5; rank++) {
-        for (var file = 0; file < 5; file++) {
-          final position = Position3D(file: file, rank: rank, level: level);
-          positions.add(position);
-          labels.add(position.notation);
+  test(
+    'all 125 cells have unique display coordinates and value-based lookup',
+    () {
+      final positions = <Position3D>{};
+      final labels = <String>{};
+      for (var level = 0; level < 5; level++) {
+        for (var rank = 0; rank < 5; rank++) {
+          for (var file = 0; file < 5; file++) {
+            final position = Position3D(file: file, rank: rank, level: level);
+            positions.add(position);
+            labels.add(position.notation);
+          }
         }
       }
-    }
-    expect(positions, hasLength(125));
-    expect(labels, hasLength(125));
-    expect(labels, containsAll(['Aa1', 'Cc3', 'Ee5']));
-    expect(positions.contains(const Position3D(file: 2, rank: 2, level: 2)), isTrue);
-  });
+      expect(positions, hasLength(125));
+      expect(labels, hasLength(125));
+      expect(labels, containsAll(['Aa1', 'Cc3', 'Ee5']));
+      expect(
+        positions.contains(const Position3D(file: 2, rank: 2, level: 2)),
+        isTrue,
+      );
+    },
+  );
 
   test('candidate offsets leave bounds without becoming valid board cells', () {
     const corner = Position3D(file: 0, rank: 0, level: 0);
@@ -53,7 +59,10 @@ void main() {
       final army = state.board.values.where((piece) => piece.color == color);
       expect(army, hasLength(20));
       for (final entry in expected.entries) {
-        expect(army.where((piece) => piece.type == entry.key), hasLength(entry.value));
+        expect(
+          army.where((piece) => piece.type == entry.key),
+          hasLength(entry.value),
+        );
       }
     }
     expect(state.board.keys.any((position) => position.level == 2), isFalse);

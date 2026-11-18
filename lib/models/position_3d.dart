@@ -16,9 +16,12 @@ class Position3D {
   final int level;
 
   bool get isInBounds =>
-      file >= 0 && file < boardSize &&
-      rank >= 0 && rank < boardSize &&
-      level >= 0 && level < boardSize;
+      file >= 0 &&
+      file < boardSize &&
+      rank >= 0 &&
+      rank < boardSize &&
+      level >= 0 &&
+      level < boardSize;
 
   Position3D offset({int file = 0, int rank = 0, int level = 0}) {
     return Position3D(

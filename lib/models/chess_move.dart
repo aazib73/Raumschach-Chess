@@ -12,7 +12,9 @@ class ChessMove {
   @override
   bool operator ==(Object other) =>
       other is ChessMove &&
-      from == other.from && to == other.to && promotion == other.promotion;
+      from == other.from &&
+      to == other.to &&
+      promotion == other.promotion;
 
   @override
   int get hashCode => Object.hash(from, to, promotion);
