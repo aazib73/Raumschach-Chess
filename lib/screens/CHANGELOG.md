@@ -1,0 +1,10 @@
+# app-screens Changelog
+
+Owner: JinboLi
+JinboLi is responsible for the app-screens branch: the Home, Game Options, and Results screens and the navigation between them.
+
+## 2026-11-18
+- Set up the app-screens branch and verified pushing to GitHub works.
+- Merged the latest main (Flutter SDK requirement lowered to ^3.8.1).
+- Renamed the test file to lib/screens/CHANGELOG.md to track app-screens changes.
+- Restored pubspec.lock to the main version (pubspec.lock is no longer committed from this branch).
