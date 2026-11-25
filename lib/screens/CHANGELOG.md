@@ -9,6 +9,9 @@ JinboLi is responsible for the app-screens branch: the Home, Game Options, and R
 - Tutorial and Settings show a "Coming soon" SnackBar until those screens are implemented.
 - Pointed the app entry in main.dart at the Home screen.
 - Added a minimal Game Options placeholder so New Game navigation works.
+- Built the Game Options screen with local pass-and-play and four chaos-modifier toggles (Wraparound, Gravity, Rubik's slice, and Portals).
+- Stored modifier choices in an immutable GameOptions model; they are not wired to the engine yet.
+- Start Game calls controller.startNewGame() and opens a temporary board placeholder, because GameScreen is still a teammate stub.
 
 ## 2026-11-18
 - Set up the app-screens branch and verified pushing to GitHub works.
