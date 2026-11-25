@@ -1,10 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/game_controller.dart';
-import '../models/chess_piece.dart';
+import '../models/chess_move.dart';
 import '../models/game_options.dart';
-import '../models/game_state.dart';
+import '../models/position_3d.dart';
+import 'game_screen.dart';
 import 'results_screen.dart';
 
 /// Lets the players pick a local pass-and-play game and optional modifiers.
@@ -26,19 +26,11 @@ class _GameOptionsScreenState extends State<GameOptionsScreen> {
   GameOptions _options = const GameOptions();
 
   Future<void> _startGame() async {
-    widget.controller.startNewGame();
-    // TODO(app shell): Push GameScreen(controller: widget.controller) once
-    // the board-ui teammate implements that widget. Pass [GameOptions] into
-    // the controller or game screen when the engine supports modifiers.
-    if (!mounted) {
-      return;
-    }
-    await Navigator.of(context).push(
+    final controller = widget.controller;
+    controller.startNewGame();
+    await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (context) => _PendingGameScreen(
-          controller: widget.controller,
-          options: _options,
-        ),
+        builder: (_) => _LocalMatch(controller: controller),
       ),
     );
   }
@@ -226,109 +218,66 @@ class _GameOptionsScreenState extends State<GameOptionsScreen> {
   }
 }
 
-/// Temporary stand-in until the board-ui teammate implements GameScreen.
-///
-/// [GameScreen] in lib/screens/game_screen.dart is still only a TODO comment
-/// and cannot be constructed. This page keeps the game session on the stack
-/// so Home disposes [GameController] only after the player returns home.
-class _PendingGameScreen extends StatelessWidget {
-  const _PendingGameScreen({
-    required this.controller,
-    required this.options,
-  });
+class _LocalMatch extends StatefulWidget {
+  const _LocalMatch({required this.controller});
 
   final GameController controller;
-  final GameOptions options;
 
-  String get _modifierSummary {
-    final enabled = <String>[
-      if (options.wraparound) 'Wraparound',
-      if (options.gravity) 'Gravity',
-      if (options.rubiksSlice) "Rubik's slice",
-      if (options.portals) 'Portals',
-    ];
-    if (enabled.isEmpty) {
-      return 'Standard rules (no modifiers)';
+  @override
+  State<_LocalMatch> createState() => _LocalMatchState();
+}
+
+class _LocalMatchState extends State<_LocalMatch> {
+  GameController get _controller => widget.controller;
+
+  Future<void> _onCellTap(Position3D position) async {
+    final moves = _controller.movesTo(position);
+    if (moves.isEmpty) {
+      _controller.selectPosition(position);
+      return;
     }
-    return 'Selected modifiers: ${enabled.join(', ')}';
+
+    if (moves.length == 1) {
+      _controller.playMove(moves.single);
+      return;
+    }
+
+    // A promotion square has a separate legal move for each piece choice.
+    final move = await showDialog<ChessMove>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: const Text('Promote pawn'),
+        children: [
+          for (final option in moves)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(dialogContext).pop(option),
+              child: Text(option.promotion!.name),
+            ),
+        ],
+      ),
+    );
+    if (mounted && move != null) {
+      _controller.playMove(move);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final turnName = controller.state.turn.name;
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, child) {
+        final state = _controller.state;
+        if (state.isOver) {
+          return ResultsScreen(controller: _controller);
+        }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Game')),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.grid_view_rounded,
-                        size: 56,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'The board screen is still being built.',
-                        textAlign: TextAlign.center,
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'A new pass-and-play game has started. '
-                        '${turnName[0].toUpperCase()}${turnName.substring(1)} to move.',
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _modifierSummary,
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      // TODO(app shell): Remove this preview button when
-                      // GameScreen is implemented and pushes ResultsScreen
-                      // after the game ends.
-                      if (kDebugMode) ...[
-                        const SizedBox(height: 32),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (context) => ResultsScreen(
-                                  controller: controller,
-                                  previewWinner: PieceColor.white,
-                                  previewStatus: GameStatus.checkmate,
-                                  previewMoveCount: 24,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('Preview results (dev)'),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+        return GameScreen(
+          state: state,
+          selectedPosition: _controller.selectedPosition,
+          legalTargets: _controller.legalTargets,
+          onCellTap: _onCellTap,
+        );
+      },
     );
   }
 }
