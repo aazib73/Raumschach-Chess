@@ -11,9 +11,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
+    return MaterialApp(
       title: 'Raumschach',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E5A3C)),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
