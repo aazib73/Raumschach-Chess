@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../controllers/game_controller.dart';
 import 'game_options_screen.dart';
 
-/// Landing screen for the app: start a game, or open Tutorial / Settings.
+/// Landing screen for the app: start a game, or open Tutorial, Practice, or Settings.
 ///
 /// This screen creates the shared [GameController] when the player starts a
 /// new game, passes that instance into [GameOptionsScreen], and disposes it
@@ -43,12 +43,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showComingSoon() {
+    _showSnackBar('Coming soon');
+  }
+
+  void _showInDevelopment() {
+    _showSnackBar('In development');
+  }
+
+  void _showSnackBar(String message) {
     final messenger = ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(
-          content: Text('Coming soon'),
+        SnackBar(
+          content: Text(message),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -125,14 +133,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          OutlinedButton.icon(
-                            onPressed: _showComingSoon,
-                            icon: const Icon(Icons.settings_outlined),
-                            label: const Text('Settings'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              textStyle: textTheme.titleMedium,
-                            ),
+                          _InDevelopmentButton(
+                            icon: Icons.touch_app_outlined,
+                            label: 'Practice',
+                            onPressed: _showInDevelopment,
+                          ),
+                          const SizedBox(height: 12),
+                          _InDevelopmentButton(
+                            icon: Icons.settings_outlined,
+                            label: 'Settings',
+                            onPressed: _showInDevelopment,
                           ),
                         ],
                       ),
@@ -143,6 +153,55 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+
+/// Full-width outlined action with an "In development" subtitle.
+class _InDevelopmentButton extends StatelessWidget {
+  const _InDevelopmentButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        textStyle: textTheme.titleMedium,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon),
+              const SizedBox(width: 8),
+              Text(label),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'In development',
+            style: textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }

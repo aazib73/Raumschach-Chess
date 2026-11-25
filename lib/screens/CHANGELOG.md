@@ -15,6 +15,8 @@ JinboLi is responsible for the app-screens branch: the Home, Game Options, and R
 - Built the Results screen with a White wins / Black wins / Draw headline, a reason when available, and the number of moves played.
 - Added New Game (returns to Game Options so modifiers can be changed), Home, and a disabled Replay button.
 - Added a temporary dev-only Preview results button on the board placeholder so the Results screen can be opened before GameScreen exists.
+- Added a Practice button on the Home screen for the planned sandbox mode.
+- Marked Settings and Practice as "In development"; tapping either shows an "In development" SnackBar. Tutorial still shows "Coming soon".
 
 ## 2026-11-18
 - Set up the app-screens branch and verified pushing to GitHub works.
