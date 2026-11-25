@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
+        settings: const RouteSettings(name: GameOptionsScreen.routeName),
         builder: (context) => GameOptionsScreen(controller: controller),
       ),
     );

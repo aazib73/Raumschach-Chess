@@ -12,6 +12,9 @@ JinboLi is responsible for the app-screens branch: the Home, Game Options, and R
 - Built the Game Options screen with local pass-and-play and four chaos-modifier toggles (Wraparound, Gravity, Rubik's slice, and Portals).
 - Stored modifier choices in an immutable GameOptions model; they are not wired to the engine yet.
 - Start Game calls controller.startNewGame() and opens a temporary board placeholder, because GameScreen is still a teammate stub.
+- Built the Results screen with a White wins / Black wins / Draw headline, a reason when available, and the number of moves played.
+- Added New Game (returns to Game Options so modifiers can be changed), Home, and a disabled Replay button.
+- Added a temporary dev-only Preview results button on the board placeholder so the Results screen can be opened before GameScreen exists.
 
 ## 2026-11-18
 - Set up the app-screens branch and verified pushing to GitHub works.

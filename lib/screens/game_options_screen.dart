@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/game_controller.dart';
+import '../models/chess_piece.dart';
 import '../models/game_options.dart';
+import '../models/game_state.dart';
+import 'results_screen.dart';
 
 /// Lets the players pick a local pass-and-play game and optional modifiers.
 ///
@@ -9,6 +13,8 @@ import '../models/game_options.dart';
 /// sent to [GameController] yet, because the engine does not apply them.
 class GameOptionsScreen extends StatefulWidget {
   const GameOptionsScreen({super.key, required this.controller});
+
+  static const routeName = 'gameOptions';
 
   final GameController controller;
 
@@ -294,6 +300,27 @@ class _PendingGameScreen extends StatelessWidget {
                           color: colorScheme.onSurfaceVariant,
                         ),
                       ),
+                      // TODO(app shell): Remove this preview button when
+                      // GameScreen is implemented and pushes ResultsScreen
+                      // after the game ends.
+                      if (kDebugMode) ...[
+                        const SizedBox(height: 32),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (context) => ResultsScreen(
+                                  controller: controller,
+                                  previewWinner: PieceColor.white,
+                                  previewStatus: GameStatus.checkmate,
+                                  previewMoveCount: 24,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('Preview results (dev)'),
+                        ),
+                      ],
                     ],
                   ),
                 ),
